@@ -1,0 +1,19 @@
+version: '3.1'
+services:
+  mongodb:
+    image: mongo:7.0.7
+    container_name: wishlist-mongodb
+    ports:
+      - 27017:27017
+    volumes:
+      - data:/data
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=rootuser
+      - MONGO_INITDB_ROOT_PASSWORD=rootpass
+
+networks:
+  wishlist-network:
+    driver: bridge
+
+volumes:
+  data: {}
