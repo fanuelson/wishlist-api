@@ -1,18 +1,19 @@
 package com.example.wishlist.gateways.db.documents;
 
 import com.example.wishlist.domain.Wishlist;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Document("wishlist")
 @Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class WishlistDocument {
 
     @Id
@@ -27,7 +28,7 @@ public class WishlistDocument {
         WishlistDocument wishlistDocument = new WishlistDocument();
         wishlistDocument.setId(wishlist.getId());
         wishlistDocument.setCustomerId(wishlist.getCustomerId());
-        List<ProductDocument> products = wishlist.getProducts().stream().map((ProductDocument::create)).toList();
+        List<ProductDocument> products = wishlist.getProducts().stream().map((ProductDocument::create)).collect(Collectors.toList());
         wishlistDocument.setProducts(products);
         return wishlistDocument;
     }

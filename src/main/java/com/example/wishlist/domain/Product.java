@@ -2,13 +2,12 @@ package com.example.wishlist.domain;
 
 import com.example.wishlist.gateways.http.dtos.request.ProductRequestDTO;
 import com.example.wishlist.gateways.db.documents.ProductDocument;
-import lombok.AccessLevel;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(of = {"id"})
 public class Product {
 
