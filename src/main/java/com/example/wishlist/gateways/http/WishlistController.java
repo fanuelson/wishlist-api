@@ -1,48 +1,53 @@
 package com.example.wishlist.gateways.http;
 
-import com.example.wishlist.dtos.request.ProductDTO;
-import com.example.wishlist.dtos.response.ExistsProductResponseDTO;
-import com.example.wishlist.dtos.response.FindAllProductsResponseDTO;
-import com.example.wishlist.entities.Product;
-import com.example.wishlist.entities.Wishlist;
-import com.example.wishlist.entities.WishlistId;
-import com.example.wishlist.gateways.repositories.WishlistRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.example.wishlist.gateways.http.dtos.request.ProductRequestDTO;
+import com.example.wishlist.gateways.http.dtos.response.ProductExistsResponseDTO;
+import com.example.wishlist.gateways.http.dtos.response.ProductResponseDTO;
+import com.example.wishlist.usecases.AddProductToWishlist;
+import com.example.wishlist.usecases.ExistsProductInWishlist;
+import com.example.wishlist.usecases.FindAllProductsByCustomer;
+import com.example.wishlist.usecases.RemoveProductInWishlist;
+import com.example.wishlist.domain.Product;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 
 @RestController
 @RequestMapping("/wishlist")
+@RequiredArgsConstructor
 public class WishlistController {
-    @Autowired
-    private WishlistRepository wishlistRepository;
-    @PostMapping("customers/{customerId}/products/{productId}")
+
+    private final AddProductToWishlist addProductToWishlist;
+
+    private final ExistsProductInWishlist existsProductInWishlist;
+
+    private final FindAllProductsByCustomer findAllProductsByCustomer;
+
+    private final RemoveProductInWishlist removeProductInWishlist;
+
+    @PostMapping("customers/{customerId}/products")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addProduct(@PathVariable(value = "customerId") final String customerId, @PathVariable(value = "productId") final String productId, @RequestBody final ProductDTO productDTO) {
-        Wishlist wishlist = Wishlist.create(WishlistId.create(customerId, productId), Product.create(productDTO));
-        this.wishlistRepository.insert(wishlist);
+    public void addProduct(@PathVariable(value = "customerId") final String customerId, @RequestBody final ProductRequestDTO productDTO) {
+        addProductToWishlist.execute(customerId, Product.create(productDTO));
     }
 
     @DeleteMapping("/customers/{customerId}/products/{productId}")
-    public void removeProduct(@PathVariable(value = "customerId") String customerId, @PathVariable(value = "productId") String productId) {
-        WishlistId id = WishlistId.create(customerId, productId);
-        this.wishlistRepository.deleteById(id);
+    public void removeProduct(@PathVariable(value = "customerId") final String customerId, @PathVariable(value = "productId") final String productId) {
+        this.removeProductInWishlist.execute(customerId, productId);
     }
     @GetMapping("customers/{customerId}/products")
-    public List<FindAllProductsResponseDTO> findAllProductsByCustomer(@PathVariable(value = "customerId") String customerId) {
-        List<Wishlist> wishlist = this.wishlistRepository.findByIdCustomerId(customerId);
-        return wishlist.stream().map((_wishlist) -> FindAllProductsResponseDTO.create(_wishlist.getProduct())).toList();
+    public List<ProductResponseDTO> findAllProductsByCustomer(@PathVariable(value = "customerId") final String customerId) {
+        List<Product> products = this.findAllProductsByCustomer.execute(customerId);
+        return products.stream().map(ProductResponseDTO::create).toList();
     }
 
     @GetMapping("/customers/{customerId}/products/{productId}/exists")
-    public ExistsProductResponseDTO existsProduct(@PathVariable(value = "customerId") String customerId, @PathVariable(value = "productId") String productId) {
-        WishlistId id = WishlistId.create(customerId, productId);
-        Optional<Wishlist> wishlist = this.wishlistRepository.findById(id);
-        return ExistsProductResponseDTO.create(wishlist.isPresent());
+    public ProductExistsResponseDTO existsProduct(@PathVariable(value = "customerId") final String customerId, @PathVariable(value = "productId") final String productId) {
+        boolean exists = this.existsProductInWishlist.execute(customerId, productId);
+        return ProductExistsResponseDTO.create(exists);
     }
 
 }
