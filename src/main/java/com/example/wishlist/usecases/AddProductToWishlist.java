@@ -3,7 +3,9 @@ package com.example.wishlist.usecases;
 import com.example.wishlist.gateways.db.WishlistMongoGateway;
 import com.example.wishlist.domain.Product;
 import com.example.wishlist.domain.Wishlist;
+import com.example.wishlist.gateways.http.exceptions.WishlistLimitProductsException;
 import lombok.RequiredArgsConstructor;
+import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,6 +19,9 @@ public class AddProductToWishlist {
         Wishlist wishlist = wishlistMongoGateway.findByCustomerId(customerId)
                 .orElse(Wishlist.create(customerId));
 
+        if(wishlist.getProducts().size() >= 20) {
+            throw new WishlistLimitProductsException();
+        }
         int indexOfProduct = wishlist.getProducts().indexOf(product);
         if(indexOfProduct >= 0) {
             wishlist.getProducts().set(indexOfProduct, product);

@@ -3,6 +3,7 @@ package com.example.wishlist.gateways.http;
 import com.example.wishlist.gateways.http.dtos.request.ProductRequestDTO;
 import com.example.wishlist.gateways.http.dtos.response.ProductExistsResponseDTO;
 import com.example.wishlist.gateways.http.dtos.response.ProductResponseDTO;
+import com.example.wishlist.gateways.http.exceptions.WishlistLimitProductsException;
 import com.example.wishlist.usecases.AddProductToWishlist;
 import com.example.wishlist.usecases.ExistsProductInWishlist;
 import com.example.wishlist.usecases.FindAllProductsByCustomer;
