@@ -14,12 +14,7 @@ public class FindAllProductsByCustomer {
     private final WishlistMongoGateway wishlistMongoGateway;
     public List<Product> execute(final String customerId) {
         Wishlist wishlist = wishlistMongoGateway.findByCustomerId(customerId)
-                .orElse(Wishlist
-                        .builder()
-                        .customerId(customerId)
-                        .products(List.of()).build()
-                );
-
+                .orElse(Wishlist.create(customerId));
 
         return wishlist.getProducts();
     }
