@@ -8,6 +8,7 @@ import com.example.wishlist.usecases.ExistsProductInWishlist;
 import com.example.wishlist.usecases.FindAllProductsByCustomer;
 import com.example.wishlist.usecases.RemoveProductInWishlist;
 import com.example.wishlist.domain.Product;
+import jdk.jfr.ContentType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -28,7 +29,7 @@ public class WishlistController {
 
     private final RemoveProductInWishlist removeProductInWishlist;
 
-    @PostMapping("customers/{customerId}/products")
+    @PostMapping(value = "customers/{customerId}/products")
     @ResponseStatus(HttpStatus.CREATED)
     public void addProduct(@PathVariable(value = "customerId") final String customerId, @RequestBody final ProductRequestDTO productDTO) {
         addProductToWishlist.execute(customerId, Product.create(productDTO));
