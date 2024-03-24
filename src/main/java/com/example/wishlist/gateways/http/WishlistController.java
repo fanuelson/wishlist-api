@@ -51,8 +51,10 @@ public class WishlistController {
     }
 
     @DeleteMapping("/customers/{customerId}/products/{productId}")
-    public void removeProduct(@PathVariable(value = "customerId") final String customerId, @PathVariable(value = "productId") final String productId) {
-        this.removeProductInWishlist.execute(customerId, productId);
+    public ProductResponseDTO removeProduct(@PathVariable(value = "customerId") final String customerId, @PathVariable(value = "productId") final String productId) {
+        Product productRemoved = this.removeProductInWishlist.execute(customerId, productId);
+        return ProductResponseDTO.create(productRemoved);
+
     }
     @GetMapping("customers/{customerId}/products")
     public List<ProductResponseDTO> findAllProductsByCustomer(@PathVariable(value = "customerId") final String customerId) {

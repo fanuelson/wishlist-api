@@ -14,13 +14,15 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AddProductToWishlist {
 
+    private static final int PRODUCTS_LIMIT = 20;
+
     private final WishlistMongoGateway wishlistMongoGateway;
     public Wishlist execute(final String customerId,final Product product) {
         Wishlist wishlist = wishlistMongoGateway.findByCustomerId(customerId)
                 .orElse(Wishlist.create(customerId));
 
-        if(wishlist.getProducts().size() >= 20) {
-            throw new WishlistLimitProductsException();
+        if(wishlist.getProducts().size() >= PRODUCTS_LIMIT) {
+            throw new WishlistLimitProductsException(PRODUCTS_LIMIT);
         }
         int indexOfProduct = wishlist.getProducts().indexOf(product);
         if(indexOfProduct >= 0) {

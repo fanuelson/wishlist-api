@@ -12,7 +12,7 @@ public class ExceptionHandle {
 
     @ExceptionHandler({WishlistException.class})
     public ResponseEntity<?> handleException(final WishlistException ex) {
-        return new ResponseEntity<>(new ExceptionResponseDTO(ex.getMessage()), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(new ExceptionResponseDTO(ex.getMessage()), ex.getStatus());
     }
 
     @ExceptionHandler({Exception.class})

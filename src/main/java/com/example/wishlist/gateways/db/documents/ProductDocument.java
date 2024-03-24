@@ -2,11 +2,12 @@ package com.example.wishlist.gateways.db.documents;
 
 import com.example.wishlist.domain.Product;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@NoArgsConstructor
 public class ProductDocument {
 
     private String id;

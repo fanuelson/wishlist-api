@@ -6,6 +6,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -22,7 +23,7 @@ public class WishlistDocument {
     @Indexed
     private String customerId;
 
-    private List<ProductDocument> products;
+    private List<ProductDocument> products = Collections.emptyList();
 
     public static WishlistDocument create(Wishlist wishlist) {
         WishlistDocument wishlistDocument = new WishlistDocument();

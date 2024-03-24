@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Data
@@ -32,4 +33,17 @@ public class Wishlist {
                 .products(new ArrayList<>())
                 .build();
     }
+    public Wishlist withProductRemoved(final Product product) {
+        products = products.stream().filter(p -> p.equals(product)).toList();
+        return this;
+    }
+
+    public Optional<Product> findProductById(final String productId) {
+        int indexOf = this.getProducts().indexOf(Product.builder().id(productId).build());
+        if(indexOf >=0) {
+            return Optional.of(this.getProducts().get(indexOf));
+        }
+        return Optional.empty();
+    }
+
 }

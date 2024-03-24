@@ -30,4 +30,8 @@ public class Product {
         product.setPrice(productDTO.getPrice());
         return product;
     }
+
+    public boolean equalsId(final String productId) {
+        return id.equals(productId);
+    }
 }

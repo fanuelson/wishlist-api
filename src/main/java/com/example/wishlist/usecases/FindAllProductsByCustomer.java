@@ -6,6 +6,7 @@ import com.example.wishlist.domain.Wishlist;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.List;
 @Component
 @RequiredArgsConstructor
@@ -13,9 +14,8 @@ public class FindAllProductsByCustomer {
 
     private final WishlistMongoGateway wishlistMongoGateway;
     public List<Product> execute(final String customerId) {
-        Wishlist wishlist = wishlistMongoGateway.findByCustomerId(customerId)
-                .orElse(Wishlist.create(customerId));
-
-        return wishlist.getProducts();
+        return wishlistMongoGateway.findByCustomerId(customerId)
+                .map(Wishlist::getProducts)
+                .orElse(Collections.emptyList());
     }
 }
