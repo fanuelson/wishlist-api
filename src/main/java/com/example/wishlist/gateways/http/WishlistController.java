@@ -9,9 +9,14 @@ import com.example.wishlist.usecases.ExistsProductInWishlist;
 import com.example.wishlist.usecases.FindAllProductsByCustomer;
 import com.example.wishlist.usecases.RemoveProductInWishlist;
 import com.example.wishlist.domain.Product;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jdk.jfr.ContentType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,6 +37,15 @@ public class WishlistController {
 
     @PostMapping(value = "customers/{customerId}/products")
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(
+            summary = "Add a product to customer's wishlist",
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "The product has been added to the customer's wishlist"),
+                    @ApiResponse(responseCode = "400", description = "Wishlist of this customer has already reached the limit of 20 products", content = {
+                            @Content(schema = @Schema(oneOf = ResponseEntity.class))
+                    })
+            }
+    )
     public void addProduct(@PathVariable(value = "customerId") final String customerId, @RequestBody final ProductRequestDTO productDTO) {
         addProductToWishlist.execute(customerId, Product.create(productDTO));
     }
