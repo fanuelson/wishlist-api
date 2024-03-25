@@ -37,13 +37,21 @@ public class Wishlist {
         products = products.stream().filter(p -> p.equals(product)).toList();
         return this;
     }
-
     public Optional<Product> findProductById(final String productId) {
         int indexOf = this.getProducts().indexOf(Product.builder().id(productId).build());
         if(indexOf >=0) {
             return Optional.of(this.getProducts().get(indexOf));
         }
         return Optional.empty();
+    }
+
+    public void addOrUpdateProduct(Product product) {
+        int indexOfProduct = this.getProducts().indexOf(product);
+        if(indexOfProduct >= 0) {
+            this.getProducts().set(indexOfProduct, product);
+        } else {
+            this.getProducts().addFirst(product);
+        }
     }
 
 }

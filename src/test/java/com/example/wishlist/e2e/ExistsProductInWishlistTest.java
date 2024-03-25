@@ -1,8 +1,5 @@
 package com.example.wishlist.e2e;
 
-import com.example.wishlist.domain.Product;
-import com.example.wishlist.gateways.db.documents.ProductDocument;
-import com.example.wishlist.gateways.db.documents.WishlistDocument;
 import com.example.wishlist.gateways.db.repositories.WishlistRepository;
 import com.example.wishlist.gateways.http.dtos.request.ProductRequestDTO;
 import io.restassured.http.ContentType;
@@ -20,13 +17,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
 import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.core.Is.is;
 
 @Testcontainers
