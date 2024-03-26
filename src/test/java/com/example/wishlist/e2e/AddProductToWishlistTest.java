@@ -2,6 +2,7 @@ package com.example.wishlist.e2e;
 
 import com.example.wishlist.domain.Product;
 import com.example.wishlist.domain.Wishlist;
+import com.example.wishlist.e2e.config.MongoContainerConfigTest;
 import com.example.wishlist.gateways.db.documents.ProductDocument;
 import com.example.wishlist.gateways.db.documents.WishlistDocument;
 import com.example.wishlist.gateways.db.repositories.WishlistRepository;
@@ -27,15 +28,9 @@ import java.util.Optional;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.any;
 
-@Testcontainers
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@DisplayName("POST customers/{customerId}/products")
-public class AddProductToWishlistTest {
 
-    @Container
-    @ServiceConnection
-    static MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:7.0.7"));
+@DisplayName("POST customers/{customerId}/products")
+public class AddProductToWishlistTest extends MongoContainerConfigTest {
 
     @Autowired
     private WishlistRepository wishlistRepository;

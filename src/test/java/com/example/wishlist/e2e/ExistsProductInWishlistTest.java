@@ -1,5 +1,6 @@
 package com.example.wishlist.e2e;
 
+import com.example.wishlist.e2e.config.MongoContainerConfigTest;
 import com.example.wishlist.gateways.db.repositories.WishlistRepository;
 import com.example.wishlist.gateways.http.dtos.request.ProductRequestDTO;
 import io.restassured.http.ContentType;
@@ -21,15 +22,9 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.RestAssured.when;
 import static org.hamcrest.core.Is.is;
 
-@Testcontainers
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@DisplayName("GET /customers/{customerId}/products/{productId}/exists")
-public class ExistsProductInWishlistTest {
 
-    @Container
-    @ServiceConnection
-    static MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:7.0.7"));
+@DisplayName("GET /customers/{customerId}/products/{productId}/exists")
+public class ExistsProductInWishlistTest extends MongoContainerConfigTest {
 
     @Autowired
     private WishlistRepository wishlistRepository;

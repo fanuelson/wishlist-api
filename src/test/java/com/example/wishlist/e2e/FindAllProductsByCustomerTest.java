@@ -1,6 +1,7 @@
 package com.example.wishlist.e2e;
 
 import com.example.wishlist.domain.Product;
+import com.example.wishlist.e2e.config.MongoContainerConfigTest;
 import com.example.wishlist.gateways.db.documents.ProductDocument;
 import com.example.wishlist.gateways.db.documents.WishlistDocument;
 import com.example.wishlist.gateways.db.repositories.WishlistRepository;
@@ -35,15 +36,9 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.collection.IsEmptyCollection.empty;
 import static org.hamcrest.core.Is.is;
 
-@Testcontainers
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
-@DisplayName("GET /customers/{customerId}/products")
-public class FindAllProductsByCustomerTest {
 
-    @Container
-    @ServiceConnection
-    static MongoDBContainer mongoDBContainer = new MongoDBContainer(DockerImageName.parse("mongo:7.0.7"));
+@DisplayName("GET /customers/{customerId}/products")
+public class FindAllProductsByCustomerTest extends MongoContainerConfigTest {
 
     @Autowired
     private WishlistRepository wishlistRepository;
