@@ -47,10 +47,12 @@ class AddProductToWishlistTest extends Specification {
         def wishlist = addProductToWishlist.execute(customerId, product)
 
         then: "should return wishlist created"
-        wishlist.getCustomerId() == "1"
-        wishlist.getProducts().size() == 1
-        wishlist.getProducts().getFirst().getId() == "1"
-        wishlist.getProducts().getFirst().getName() == "Product1"
-        wishlist.getProducts().getFirst().getPrice() == 10.5
+        verifyAll(wishlist) {
+            customerId == "1"
+            products.size() == 1
+            products.first.id == "1"
+            products.first.name == "Product1"
+            products.first.price == 10.5
+        }
     }
 }
