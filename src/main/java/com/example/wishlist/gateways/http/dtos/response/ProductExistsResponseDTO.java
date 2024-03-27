@@ -10,9 +10,9 @@ public class ProductExistsResponseDTO {
 
     private boolean exists;
 
-    public static ProductExistsResponseDTO create(boolean exists) {
-        ProductExistsResponseDTO existsProductResponseDTO = new ProductExistsResponseDTO();
-        existsProductResponseDTO.setExists(exists);
-        return existsProductResponseDTO;
+    public static ProductExistsResponseDTO create(final boolean exists) {
+        final ProductExistsResponseDTO productExistsResponseDTO = new ProductExistsResponseDTO();
+        productExistsResponseDTO.setExists(exists);
+        return productExistsResponseDTO;
     }
 }

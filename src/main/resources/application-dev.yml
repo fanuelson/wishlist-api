@@ -1,0 +1,12 @@
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: wishlist-db
+      username: rootuser
+      password: rootpass
+      authentication-database: admin
+
+validation:
+  max-products: 20

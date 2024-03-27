@@ -17,7 +17,7 @@ public class Wishlist {
     private String customerId;
     private List<Product> products;
 
-    public static Wishlist create(WishlistDocument wishlistDocument) {
+    public static Wishlist create(final WishlistDocument wishlistDocument) {
         return Wishlist
                 .builder()
                 .id(wishlistDocument.getId())
@@ -26,32 +26,33 @@ public class Wishlist {
                 .build();
     }
 
-    public static Wishlist create(String customerId) {
+    public static Wishlist create(final String customerId) {
         return Wishlist
                 .builder()
                 .customerId(customerId)
                 .products(new ArrayList<>())
                 .build();
     }
+
     public Wishlist withProductRemoved(final Product product) {
-        products = products.stream().filter(p -> p.equals(product)).toList();
+        products = this.getProducts().stream().filter(p -> p.equals(product)).toList();
         return this;
     }
+
     public Optional<Product> findProductById(final String productId) {
-        int indexOf = this.getProducts().indexOf(Product.builder().id(productId).build());
-        if(indexOf >=0) {
+        final int indexOf = this.getProducts().indexOf(Product.create(productId));
+        if (indexOf >= 0) {
             return Optional.of(this.getProducts().get(indexOf));
         }
         return Optional.empty();
     }
 
-    public void addOrUpdateProduct(Product product) {
-        int indexOfProduct = this.getProducts().indexOf(product);
-        if(indexOfProduct >= 0) {
+    public void addOrUpdateProduct(final Product product) {
+        final int indexOfProduct = this.getProducts().indexOf(product);
+        if (indexOfProduct >= 0) {
             this.getProducts().set(indexOfProduct, product);
         } else {
             this.getProducts().addFirst(product);
         }
     }
-
 }

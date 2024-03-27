@@ -1,18 +1,21 @@
 package com.example.wishlist.usecases.validators;
 
 import com.example.wishlist.domain.Wishlist;
-import com.example.wishlist.gateways.http.exceptions.WishlistLimitProductsException;
+import com.example.wishlist.exceptions.WishlistProductsLimitException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class MaxProductsValidator {
 
-    private static final int PRODUCTS_LIMIT = 20;
-    public boolean validate(Wishlist wishlist) {
-        if(wishlist.getProducts().size() >= PRODUCTS_LIMIT) {
-            throw new WishlistLimitProductsException(PRODUCTS_LIMIT);
-        }
+    private final ValidationProperties validationProperties;
 
-        return true;
+    public void validate(final Wishlist wishlist) {
+        final int maxProducts = validationProperties.getMaxProducts();
+
+        if (wishlist.getProducts().size() >= maxProducts) {
+            throw new WishlistProductsLimitException(maxProducts);
+        }
     }
 }

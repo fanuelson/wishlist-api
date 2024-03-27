@@ -13,11 +13,11 @@ public class ProductResponseDTO {
     private String name;
     private Double price;
 
-    public static ProductResponseDTO create(Product product) {
-        ProductResponseDTO findAllProductsResponseDTO = new ProductResponseDTO();
-        findAllProductsResponseDTO.setId(product.getId());
-        findAllProductsResponseDTO.setName(product.getName());
-        findAllProductsResponseDTO.setPrice(product.getPrice());
-        return findAllProductsResponseDTO;
+    public static ProductResponseDTO create(final Product product) {
+        final ProductResponseDTO productResponseDTO = new ProductResponseDTO();
+        productResponseDTO.setId(product.getId());
+        productResponseDTO.setName(product.getName());
+        productResponseDTO.setPrice(product.getPrice());
+        return productResponseDTO;
     }
 }

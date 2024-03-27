@@ -1,59 +1,56 @@
 package usecases
 
 import com.example.wishlist.domain.Product
-import com.example.wishlist.domain.Wishlist
-import com.example.wishlist.gateways.db.WishlistMongoGateway
+import com.example.wishlist.gateways.db.WishlistDbGateway
 import com.example.wishlist.gateways.db.WishlistMongoGatewayImpl
 import com.example.wishlist.gateways.db.documents.ProductDocument
 import com.example.wishlist.gateways.db.documents.WishlistDocument
-import com.example.wishlist.gateways.db.repositories.WishlistRepository
-import com.example.wishlist.usecases.AddProductToWishlist;
-import spock.lang.Specification;
+import com.example.wishlist.gateways.db.repositories.WishlistMongoRepository
+import com.example.wishlist.mocks.ProductMock
+import com.example.wishlist.mocks.WishlistDocumentMock
+import com.example.wishlist.usecases.AddProductToWishlist
+import com.example.wishlist.usecases.validators.MaxProductsValidator
+import com.example.wishlist.usecases.validators.ValidationProperties
+import spock.lang.Specification
 
-public class AddProductToWishlistTest extends Specification {
+class AddProductToWishlistTest extends Specification {
 
-    private AddProductToWishlist addProductToWishlist;
+    private AddProductToWishlist addProductToWishlist
 
-    private WishlistRepository wishlistRepository;
+    private WishlistMongoRepository wishlistRepository
 
-    public void setup() {
-        wishlistRepository = Stub(WishlistRepository.class);
-        WishlistMongoGateway wishlistMongoGateway = new WishlistMongoGatewayImpl(wishlistRepository);
-        addProductToWishlist = new AddProductToWishlist(wishlistMongoGateway);
+    void setup() {
+        wishlistRepository = Stub(WishlistMongoRepository.class)
+        WishlistDbGateway wishlistMongoGateway = new WishlistMongoGatewayImpl(wishlistRepository)
+        ValidationProperties validationProperties = new ValidationProperties();
+        validationProperties.setMaxProducts(20);
+        MaxProductsValidator maxProductsValidator = new MaxProductsValidator(validationProperties);
+        addProductToWishlist = new AddProductToWishlist(wishlistMongoGateway, maxProductsValidator)
     }
-    public void "should create a wishlist"() {
+
+    void "should create a wishlist"() {
         given: "a customerId"
-        String customerId = "1";
+        def customerId = "1"
 
         and: "a product"
-        Product product = Product.builder()
-                .id("1")
-                .name("Any name")
-                .price(10.5)
-                .build();
+        def product = ProductMock.create("1");
 
         and: "empty database"
-        wishlistRepository.findByCustomerId(_ as String) >> Optional<WishlistDocument>.empty();
+        wishlistRepository.findByCustomerId(_ as String) >> Optional.empty()
 
         and: "repository.save"
-        WishlistDocument wishlistDocument = WishlistDocument.builder()
-                .id("1")
-                .customerId(customerId)
-                .products(List.of(ProductDocument.create(product)))
-                .build();
+        def wishlistDocument = WishlistDocumentMock.create(customerId, List.of(ProductDocument.create(product)));
 
         wishlistRepository.save(_ as WishlistDocument) >> wishlistDocument
 
         when: "we execute addProductToWishlist"
-        Wishlist wishlist = addProductToWishlist.execute(customerId, product);
+        def wishlist = addProductToWishlist.execute(customerId, product)
 
         then: "should return wishlist created"
-        wishlist.getId() == "1"
         wishlist.getCustomerId() == "1"
         wishlist.getProducts().size() == 1
         wishlist.getProducts().getFirst().getId() == "1"
-        wishlist.getProducts().getFirst().getName() == "Any name"
+        wishlist.getProducts().getFirst().getName() == "Product1"
         wishlist.getProducts().getFirst().getPrice() == 10.5
-
     }
 }

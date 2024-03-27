@@ -1,27 +1,27 @@
 package com.example.wishlist.usecases;
 
 import com.example.wishlist.domain.Product;
-import com.example.wishlist.gateways.db.WishlistMongoGateway;
 import com.example.wishlist.domain.Wishlist;
-import com.example.wishlist.gateways.http.exceptions.ProductNotFound;
-import com.example.wishlist.gateways.http.exceptions.WishlistNotFound;
+import com.example.wishlist.exceptions.ProductNotFoundException;
+import com.example.wishlist.exceptions.WishlistNotFoundException;
+import com.example.wishlist.gateways.db.WishlistDbGateway;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class RemoveProductInWishlist {
 
-    private final WishlistMongoGateway wishlistMongoGateway;
+    private final WishlistDbGateway wishlistDbGateway;
+
     public Product execute(final String customerId, final String productId) {
-        Wishlist wishlist = wishlistMongoGateway.findByCustomerId(customerId)
-                .orElseThrow(WishlistNotFound::new);
+        final Wishlist wishlist = wishlistDbGateway.findByCustomerId(customerId)
+                .orElseThrow(WishlistNotFoundException::new);
 
-        Product product = wishlist.findProductById(productId)
-                .orElseThrow(ProductNotFound::new);
+        final Product product = wishlist.findProductById(productId)
+                .orElseThrow(ProductNotFoundException::new);
 
-        wishlistMongoGateway.save(wishlist.withProductRemoved(product));
+        wishlistDbGateway.save(wishlist.withProductRemoved(product));
 
         return product;
     }

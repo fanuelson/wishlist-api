@@ -1,133 +1,112 @@
 package com.example.wishlist.e2e;
 
-import com.example.wishlist.domain.Product;
-import com.example.wishlist.domain.Wishlist;
 import com.example.wishlist.e2e.config.MongoContainerConfigTest;
 import com.example.wishlist.gateways.db.documents.ProductDocument;
 import com.example.wishlist.gateways.db.documents.WishlistDocument;
-import com.example.wishlist.gateways.db.repositories.WishlistRepository;
+import com.example.wishlist.gateways.db.repositories.WishlistMongoRepository;
 import com.example.wishlist.gateways.http.dtos.request.ProductRequestDTO;
+import com.example.wishlist.mocks.ProductDocumentMock;
+import com.example.wishlist.mocks.ProductRequestDTOMock;
+import com.example.wishlist.mocks.WishlistDocumentMock;
 import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Tag;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.testcontainers.service.connection.ServiceConnection;
-import org.springframework.test.annotation.DirtiesContext;
-import org.testcontainers.containers.MongoDBContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.utility.DockerImageName;
-import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.CoreMatchers.any;
+import static java.util.stream.IntStream.range;
+import static org.assertj.core.api.Assertions.assertThat;
 
 
 @DisplayName("POST customers/{customerId}/products")
-public class AddProductToWishlistTest extends MongoContainerConfigTest {
+class AddProductToWishlistTest extends MongoContainerConfigTest {
 
     @Autowired
-    private WishlistRepository wishlistRepository;
+    private WishlistMongoRepository wishlistMongoRepository;
 
     @BeforeEach
     void beforeEach() {
-        wishlistRepository.deleteAll();
+        wishlistMongoRepository.deleteAll();
     }
 
     @Test
     @Tag("E2E")
     @DisplayName("SHOULD create a new wishlist with a product")
     void new_wishlist_with_a_new_product() {
-        ProductRequestDTO productRequest = new ProductRequestDTO();
-        productRequest.setId("1");
-        productRequest.setName("Product 1");
-        productRequest.setPrice(10.5);
+        final ProductRequestDTO productRequest = ProductRequestDTOMock.create();
 
         given()
             .contentType(ContentType.JSON)
-            .body(productRequest).when().post("/wishlist/customers/1/products")
+            .body(productRequest)
+        .when()
+            .post("/wishlist/customers/1/products")
         .then()
             .statusCode(HttpStatus.SC_CREATED);
 
-        Optional<WishlistDocument> wishlistDocument = wishlistRepository.findByCustomerId("1");
-        assertThat(wishlistDocument).isNotEmpty();
-        assertThat(wishlistDocument.get().getId()).isInstanceOfAny(String.class);
+        final Optional<WishlistDocument> wishlistDocumentOpt = wishlistMongoRepository.findByCustomerId("1");
+        assertThat(wishlistDocumentOpt).isNotEmpty();
+        assertThat(wishlistDocumentOpt.get().getId()).isInstanceOfAny(String.class);
     }
 
     @Test
     @Tag("E2E")
     @DisplayName("SHOULD add a product to an existing wishlist")
     void add_product_to_existing_wishlist() {
-        ProductRequestDTO productRequest = new ProductRequestDTO();
-        productRequest.setId("1");
-        productRequest.setName("Product 1");
-        productRequest.setPrice(10.5);
+        final ProductRequestDTO productRequest = ProductRequestDTOMock.create("1");
 
         given()
             .contentType(ContentType.JSON)
-        .body(productRequest).when().post("/wishlist/customers/1/products")
-            .then()
+            .body(productRequest)
+        .when()
+            .post("/wishlist/customers/1/products")
+        .then()
             .statusCode(HttpStatus.SC_CREATED);
 
-        ProductRequestDTO productRequest2 = new ProductRequestDTO();
-        productRequest.setId("2");
-        productRequest.setName("Product 2");
-        productRequest.setPrice(20.5);
+        final ProductRequestDTO productRequest2 = ProductRequestDTOMock.create("2");
 
         given()
             .contentType(ContentType.JSON)
-        .body(productRequest2).when().post("/wishlist/customers/1/products")
-            .then()
+            .body(productRequest2)
+        .when()
+            .post("/wishlist/customers/1/products")
+        .then()
             .statusCode(HttpStatus.SC_CREATED);
 
-        Optional<WishlistDocument> wishlistDocument = wishlistRepository.findByCustomerId("1");
-        assertThat(wishlistDocument).isNotEmpty();
-        assertThat(wishlistDocument.get().getId()).isInstanceOfAny(String.class);
-        assertThat(wishlistDocument.get().getProducts().size()).isEqualTo(2);
+        final Optional<WishlistDocument> wishlistDocumentOpt = wishlistMongoRepository.findByCustomerId("1");
+        assertThat(wishlistDocumentOpt).isNotEmpty();
+        assertThat(wishlistDocumentOpt.get().getId()).isInstanceOfAny(String.class);
+        assertThat(wishlistDocumentOpt.get().getProducts()).hasSize(2);
     }
 
     @Test
     @Tag("E2E")
     @DisplayName("SHOULD throw error when adding a product to an existing wishlist with 20 products")
     void add_product_to_existing_wishlist_with_20_products() {
-        List<ProductDocument> products = new ArrayList<>();
-        for(int i = 0;i < 20;i++) {
-            products.add(
-                    ProductDocument.create(Product.builder()
-                            .id(""+i)
-                            .name("Product "+i)
-                            .price(30.5)
-                            .build()
-                    )
-            );
-        }
+        final List<ProductDocument> products = range(0, 20)
+                .mapToObj(String::valueOf)
+                .map(ProductDocumentMock::create)
+                .toList();
+        final WishlistDocument wishlistDocument = WishlistDocumentMock.create(products);
 
-        WishlistDocument wishlistDocument = new WishlistDocument();
-        wishlistDocument.setCustomerId("1");
-        wishlistDocument.setProducts(products);
+        wishlistMongoRepository.save(wishlistDocument);
 
-        wishlistRepository.save(wishlistDocument);
-
-        ProductRequestDTO productRequest = new ProductRequestDTO();
-        productRequest.setId("2");
-        productRequest.setName("Product 2");
-        productRequest.setPrice(20.5);
+        final ProductRequestDTO productRequest = ProductRequestDTOMock.create("1");
 
         given()
-                .contentType(ContentType.JSON)
-                .body(productRequest).when().post("/wishlist/customers/1/products")
-                .then()
-                .statusCode(HttpStatus.SC_BAD_REQUEST);
+            .contentType(ContentType.JSON)
+        .body(productRequest).when().post("/wishlist/customers/1/products")
+            .then()
+            .statusCode(HttpStatus.SC_BAD_REQUEST);
 
-        Optional<WishlistDocument> wishlistDocumentDB = wishlistRepository.findByCustomerId("1");
-        assertThat(wishlistDocumentDB).isNotEmpty();
-        assertThat(wishlistDocumentDB.get().getId()).isInstanceOfAny(String.class);
-        assertThat(wishlistDocumentDB.get().getProducts().size()).isEqualTo(20);
+        final Optional<WishlistDocument> wisthlistDocumentOpt = wishlistMongoRepository.findByCustomerId("1");
+        assertThat(wisthlistDocumentOpt).isNotEmpty();
+        assertThat(wisthlistDocumentOpt.get().getId()).isInstanceOfAny(String.class);
+        assertThat(wisthlistDocumentOpt.get().getProducts()).hasSize(20);
     }
 }

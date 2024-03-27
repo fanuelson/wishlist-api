@@ -1,0 +1,8 @@
+server:
+  shutdown: graceful
+
+spring:
+  application:
+    name: wishlist
+  profiles:
+    active: dev
