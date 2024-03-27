@@ -1,12 +1,15 @@
 package com.example.wishlist.gateways.http.dtos.request;
 
 import com.example.wishlist.gateways.db.documents.ProductDocument;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 
 @Data
 @NoArgsConstructor
@@ -15,8 +18,10 @@ public class ProductRequestDTO {
 
     @NotBlank
     private String id;
+
     @NotBlank
     private String name;
+
     @NotNull
     @Positive
     private Double price;

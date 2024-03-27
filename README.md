@@ -4,6 +4,25 @@
 ![Spring Boot Badge](https://img.shields.io/badge/Spring_Boot-3.2.3-darkgreen)
 ![Mongo Badge](https://img.shields.io/badge/MongoDB-7.0.7-darkgreen)
 
+## Prerequisites
+
+- Java 21
+- Maven 3
+- Docker compose
+
+## Run
+```
+$ mvn clean package
+$ docker compose up -d
+```
+
+Access:
+http://localhost:8080/swagger-ui/index.html
+
+<hr/>
+
+## ENDPOINTS
+
 #### POST ```customers/{customerId}/products```
 
 

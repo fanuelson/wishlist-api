@@ -1,8 +1,6 @@
-server:
-  shutdown: graceful
-
 spring:
   application:
-    name: wishlist
-  profiles:
-    active: dev
+    name: wishlist-api
+
+validation:
+  max-products: 20

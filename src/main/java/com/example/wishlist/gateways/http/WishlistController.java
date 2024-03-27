@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +46,7 @@ public class WishlistController {
             }
     )
     public void addProduct(@PathVariable(value = "customerId") final String customerId,
-                           @RequestBody final ProductRequestDTO productDTO) {
+                           @Valid @RequestBody final ProductRequestDTO productDTO) {
         addProductToWishlist.execute(customerId, Product.create(productDTO));
     }
 

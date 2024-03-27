@@ -1,0 +1,5 @@
+spring:
+  data:
+    mongodb:
+      uri: mongodb://rootuser:rootpass@localhost/wishlist?authSource=admin
+      auto-index-creation: true

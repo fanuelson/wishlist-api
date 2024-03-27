@@ -1,15 +1,33 @@
 version: '3.1'
 services:
-  mongodb:
+  wishlist-database:
     image: mongo:7.0.7
-    container_name: wishlist-mongodb
+    container_name: wishlist-database
     ports:
       - 27017:27017
+    networks:
+      - wishlist-network
     volumes:
       - data:/data
     environment:
       - MONGO_INITDB_ROOT_USERNAME=rootuser
       - MONGO_INITDB_ROOT_PASSWORD=rootpass
+
+  wishlist-api:
+    container_name: wishlist-api
+    image: wishlist-api:latest
+    build:
+      context: .
+    environment:
+      - SERVER_PORT=8080
+      - SPRING_PROFILES_ACTIVE=dev
+      - MONGO_URI=mongodb://rootuser:rootpass@wishlist-database/wishlist?authSource=admin
+    ports:
+      - 8080:8080
+    networks:
+      - wishlist-network
+    depends_on:
+      - wishlist-database
 
 networks:
   wishlist-network:
