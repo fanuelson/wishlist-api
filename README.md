@@ -21,6 +21,8 @@ http://localhost:8080/swagger-ui/index.html
 
 **After runnning `maven clean package`, open `target/site/jacoco/index.html` in browser to see Test Coverage Report**
 
+![image](https://i.ibb.co/N9tS8HQ/tests-coverage-report.png)
+
 <hr/>
 
 ## Using
