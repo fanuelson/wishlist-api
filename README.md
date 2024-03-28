@@ -19,6 +19,16 @@ $ docker compose up -d
 Access:
 http://localhost:8080/swagger-ui/index.html
 
+**After runnning `maven clean package`, open `target/site/jacoco/index.html` in browser to see Test Coverage Report**
+
+<hr/>
+
+## Using
+- Clean Arquitecture
+- Docker
+- MongoDB
+- Tests (UnitTests, E2E Tests and SpockTests)
+
 <hr/>
 
 ## ENDPOINTS
