@@ -47,9 +47,7 @@ Body:
 
 <hr/>
 
-<h4>GET
-```customers/{customerId}/products```
-</h4>
+#### GET ```customers/{customerId}/products```
 
 Response:
 ```
@@ -68,9 +66,8 @@ Response:
 ```
 <hr/>
 
-<h4>GET
-```/customers/{customerId}/products/{productId}/exists```
-</h4>
+
+### GET ```/customers/{customerId}/products/{productId}/exists```
 
 
 Response:
@@ -82,6 +79,4 @@ Response:
 
 <hr/>
 
-<h4>DELETE
-```/customers/{customerId}/products/{productId}```
-</h4>
+### DELETE ```/customers/{customerId}/products/{productId}```
